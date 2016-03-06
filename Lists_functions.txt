@@ -1,0 +1,259 @@
+// ConsoleApplicationX.cpp : Defines the entry point for the console application.
+//
+
+
+#include "stdafx.h"
+#include <iostream>
+#include <cstdlib>
+#include <string>
+using namespace std;
+
+struct elisty
+{
+	int liczba;
+	string nazwa;
+	elisty *wsk_n;
+};
+
+void wstaw_na_pierwsze_miejsce(elisty *&glowa, int licz, string naz)
+{
+	cout << "wstaw_na_pierwsze_miejsce" << endl;
+	elisty*aktualny = new elisty;
+	aktualny->liczba = licz;
+	aktualny->nazwa = naz;
+	aktualny->wsk_n = glowa;
+	glowa = aktualny;
+}
+
+void usun_z_pierwszego_miejsca(elisty *&glowa)
+{
+	cout << "usun_z_pierwszego_miejsca" << endl;
+	elisty *aktualny;
+	aktualny = glowa;
+	if (aktualny != NULL)
+	{
+		glowa = aktualny->wsk_n;
+		delete aktualny;
+	}
+}
+
+void wstaw_element_na_koniec_listy(elisty *&glowa, int licz, string naz)
+{
+	{
+		cout << "wstaw_element_na_koniec_listy" << endl;
+		elisty * poprzedni, *aktualny;
+
+		aktualny = new elisty;  // tworzymy nowy element
+		aktualny->wsk_n = NULL;   // inicjujemy element
+		aktualny->liczba = licz;
+		aktualny->nazwa = naz;
+		poprzedni = glowa;
+		if (poprzedni)
+		{
+			while (poprzedni->wsk_n) 
+			poprzedni = poprzedni->wsk_n;
+			poprzedni->wsk_n = aktualny;
+		}
+		else glowa = aktualny;
+	}
+}
+void usun_element_na_koncu_listy(elisty *&glowa)
+{
+	elisty * aktualny = glowa;
+
+	if (aktualny != NULL)
+	{
+		if (aktualny->wsk_n)
+		{
+			while (aktualny->wsk_n->wsk_n)
+				aktualny = aktualny->wsk_n;
+			delete aktualny->wsk_n;
+			aktualny->wsk_n = NULL;
+		}
+		else
+		{
+			delete aktualny;
+			glowa = NULL;
+		}
+	}
+}
+
+void wstaw_element(elisty *glowa, int pozycja, int licz, string naz)
+{
+	cout << "wstaw_element" << endl;
+	int ile = 0;
+	elisty *aktualny = glowa;
+	while (aktualny != NULL)
+	{
+		ile++;
+		aktualny = aktualny->wsk_n;
+	}
+
+	if (ile >= pozycja)
+	{
+		elisty *aktualny = new elisty;
+		elisty *poprzedni;
+		aktualny->liczba = licz;
+		aktualny->nazwa = naz;
+		poprzedni = glowa;
+
+		for (int i = 0; i < pozycja - 1; i++)
+		{
+			poprzedni = poprzedni->wsk_n;
+		}
+
+		elisty *tmp;
+		tmp = poprzedni->wsk_n;
+		poprzedni->wsk_n = aktualny;
+		aktualny->wsk_n = tmp;
+	}
+}
+
+int ile_nazw_zaczyna_sie_na_K(elisty *glowa, char znk)
+{
+	cout << "ile_nazw_zaczyna_sie_na_K" << endl;
+	int ile_litera = 0;
+	elisty *aktualny = glowa;
+	while (aktualny != NULL)
+	{
+		if (aktualny->nazwa[0] == znk)
+		{
+			ile_litera++;
+		}
+		aktualny = aktualny->wsk_n;
+	}
+	cout << ile_litera;
+	return ile_litera;
+}
+
+string nazwa_rekordu_z_najwieksza_liczba(elisty *glowa)
+{
+	cout << "nazwa_rekordu_z_najwieksza_liczba" << endl;
+		
+	elisty *aktualny=glowa;
+	int max = aktualny->liczba;
+	elisty* maxaktualna = aktualny;
+
+	while (aktualny != NULL)
+	{
+		if (aktualny->liczba > max)
+		{
+			max = aktualny->liczba;
+			maxaktualna = aktualny;
+		}
+		aktualny = aktualny->wsk_n;
+	}
+	return maxaktualna->nazwa;
+}
+
+void wyswietl_wiekszy_od_sredniej(elisty *glowa)
+{
+	cout << "wyswietl_wiekszy_od_sredniej" << endl;
+	int ile = 0;
+	elisty *aktualny = glowa;
+	while (aktualny != NULL)
+	{
+		ile++;
+		aktualny = aktualny->wsk_n;
+	}
+
+	double suma = 0.0;
+	
+	aktualny = glowa;
+	while (aktualny != NULL)
+	{
+		suma = suma + aktualny->liczba;
+		aktualny = aktualny->wsk_n;
+	}
+	cout << "Srednia wynosi " << suma/ile << endl;
+	cout << "Wysietlanie rekordow z liczba wieksza od sredniej" << endl;
+
+	aktualny = glowa;
+	while (aktualny != NULL)
+	{
+		if (aktualny->liczba>(suma/ile))
+		{
+			cout << aktualny->liczba << endl;
+			cout << aktualny->nazwa << endl;
+		}
+		aktualny = aktualny->wsk_n;
+	}
+}
+void wyswietl_liste(elisty *adres)
+{
+	cout << "wyswietl_liste" << endl;
+	while (adres != NULL)
+	{
+		cout << (*adres).liczba << endl;
+		cout << (*adres).nazwa << endl;
+		adres = adres->wsk_n;
+	}
+}
+
+
+int main()
+{
+	elisty *glowa, *aktualny, *poprzedni;
+
+	cout << "Lista jednokierunkowa" << endl;
+
+	cout << "0 konczy wpisywanie" << endl;;
+	aktualny = NULL;
+	poprzedni = NULL;
+	glowa = poprzedni;
+
+	cout << "Wstaw liczbe" << endl;
+	int licz;
+	cin >> licz;
+	cout << "Wstaw nazwe" << endl;
+	string nazw;
+	cin >> nazw;
+	while (licz != 0)
+	{
+		poprzedni = aktualny;
+		aktualny = new elisty;
+		aktualny->liczba = licz;
+		aktualny->nazwa = nazw;
+		aktualny->wsk_n = NULL;
+
+		if (poprzedni != NULL)
+
+			poprzedni->wsk_n = aktualny;
+
+		else
+
+		glowa = aktualny;
+		cout << "Wstaw liczbe" << endl;
+		cin >> licz;
+		cout << "Wstaw nazwe" << endl;
+		cin >> nazw;
+	}
+
+	/*wstaw_na_pierwsze_miejsce(glowa, 3, "RRR");
+	wyswietl_liste(glowa);
+	
+	usun_element_na_koncu_listy(glowa);
+	wyswietl_liste(glowa);
+	
+	wyswietl_wiekszy_od_sredniej(glowa);
+	
+	ile_nazw_zaczyna_sie_na_K(glowa,'K');
+
+	wstaw_element(glowa, 2, 563, "ROKK");
+	wyswietl_liste(glowa);
+	
+	wstaw_element_na_koniec_listy(glowa, 5, "KONIEC_LISTY");*/
+	
+	usun_z_pierwszego_miejsca(glowa);
+	wyswietl_liste(glowa);
+	
+	cout << "KONIEC PROGRAMU" << endl;
+
+	system("PAUSE");
+
+	return 0;
+}
+
+
+
+
